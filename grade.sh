@@ -38,3 +38,28 @@ fi
 
 # Then, add here code to compile and run, and do any post-processing of the
 # tests
+
+
+
+  passed=0
+  failed=0
+  for test_file in $original_dir/test-data/*.txt
+  do
+    result=`java Sorter < $test_file`
+    expect=`cat $test_file.expect`
+    if [[ $expect == $result ]]
+    then
+      passed=$(( $passed+1 ))
+    else
+      failed=$(( $failed+1 ))
+    fi
+  done
+  echo "$submission_dir: Test results: $passed passed, $failed failed" > result.txt
+  cd $original_dir
+done
+
+all_results=`find submissions -name "result.txt"`
+cat $all_results | grep "Compile error"  > compile-errors.txt
+
+cat $all_results | grep "passed" > run-results.txt
+grep 'Test result' $all_results > run-results.txt
